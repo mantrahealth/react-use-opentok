@@ -88,10 +88,8 @@
     "rollup-plugin-peer-deps-external": "^2.2.0",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-url": "^3.0.1",
+    "rollup-plugin-copy": "^3.3.0",
     "semantic-release": "^17.0.1",
     "typescript": "^3.7.5"
-  },
-  "dependencies": {
-    "rollup-plugin-copy": "^3.3.0"
   }
 }
