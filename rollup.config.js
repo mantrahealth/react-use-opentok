@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import url from '@rollup/plugin-url';
 import { terser } from 'rollup-plugin-terser';
+import copy from 'rollup-plugin-copy'
 
 import pkg from './package.json';
 
@@ -36,5 +37,10 @@ export default {
     terser({
       include: [/^.+\.min\.js$/],
     }), // minify bundle files
+    copy({
+      targets: [
+        { src: 'src/index.d.ts', dest: 'dist', rename: "react-use-opentok.cjs.d.ts" },
+      ]
+    }),
   ],
 };
