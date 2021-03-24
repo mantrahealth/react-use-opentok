@@ -91,19 +91,15 @@ function _objectSpread2(target) {
 }
 
 function _slicedToArray(arr, i) {
-  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
 
 function _toConsumableArray(arr) {
-  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
 }
 
 function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  }
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
 }
 
 function _arrayWithHoles(arr) {
@@ -111,14 +107,11 @@ function _arrayWithHoles(arr) {
 }
 
 function _iterableToArray(iter) {
-  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
 }
 
 function _iterableToArrayLimit(arr, i) {
-  if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) {
-    return;
-  }
-
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
   var _arr = [];
   var _n = true;
   var _d = false;
@@ -144,12 +137,29 @@ function _iterableToArrayLimit(arr, i) {
   return _arr;
 }
 
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
 function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance");
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 function _nonIterableRest() {
-  throw new TypeError("Invalid attempt to destructure non-iterable instance");
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
 var initialState = {
@@ -183,19 +193,19 @@ var reducer = function reducer(state, action) {
     // CONNECT_SUCCESS
     case UPDATE:
       {
-        return _objectSpread2({}, state, {}, payload);
+        return _objectSpread2(_objectSpread2({}, state), payload);
       }
 
     case ADD_CONNECTION:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           connections: [].concat(_toConsumableArray(state.connections), [payload])
         });
       }
 
     case REMOVE_CONNECTION:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           connections: _toConsumableArray(state.connections.filter(function (c) {
             return c.connectionId !== payload.connectionId;
           }))
@@ -204,14 +214,14 @@ var reducer = function reducer(state, action) {
 
     case ADD_STREAM:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           streams: [].concat(_toConsumableArray(state.streams), [payload])
         });
       }
 
     case REMOVE_STREAM:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           streams: _toConsumableArray(state.streams.filter(function (s) {
             return s.streamId !== payload.streamId;
           }))
@@ -222,29 +232,29 @@ var reducer = function reducer(state, action) {
       {
         var name = payload.name,
             publisher = payload.publisher;
-        return _objectSpread2({}, state, {
-          publisher: _objectSpread2({}, state.publisher, _defineProperty({}, name, publisher))
+        return _objectSpread2(_objectSpread2({}, state), {}, {
+          publisher: _objectSpread2(_objectSpread2({}, state.publisher), {}, _defineProperty({}, name, publisher))
         });
       }
 
     case REMOVE_PUBLISHER:
       {
         var _name = payload.name;
-        return _objectSpread2({}, state, {
-          publisher: _objectSpread2({}, state.publisher, _defineProperty({}, _name, null))
+        return _objectSpread2(_objectSpread2({}, state), {}, {
+          publisher: _objectSpread2(_objectSpread2({}, state.publisher), {}, _defineProperty({}, _name, null))
         });
       }
 
     case ADD_SUBSCRIBER:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           subscribers: [].concat(_toConsumableArray(state.subscribers), [payload])
         });
       }
 
     case REMOVE_SUBSCRIBER:
       {
-        return _objectSpread2({}, state, {
+        return _objectSpread2(_objectSpread2({}, state), {}, {
           subscribers: _toConsumableArray(state.subscribers.filter(function (s) {
             return s.streamId !== payload.streamId;
           }))
@@ -427,13 +437,13 @@ var useOpenTok = function useOpenTok() {
     });
   }, [action]);
   var initSessionAndConnect = react.useCallback( /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref3) {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(_ref2) {
       var apiKey, sessionId, token, sessionOptions, newSession;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              apiKey = _ref3.apiKey, sessionId = _ref3.sessionId, token = _ref3.token, sessionOptions = _ref3.sessionOptions;
+              apiKey = _ref2.apiKey, sessionId = _ref2.sessionId, token = _ref2.token, sessionOptions = _ref2.sessionOptions;
               _context.next = 3;
               return initSession({
                 apiKey: apiKey,
@@ -455,14 +465,15 @@ var useOpenTok = function useOpenTok() {
     }));
 
     return function (_x) {
-      return _ref2.apply(this, arguments);
+      return _ref3.apply(this, arguments);
     };
   }(), [connectSession, initSession]);
   var disconnectSession = react.useCallback(function () {
     session.disconnect();
     action.update({
       connectionId: null,
-      isSessionConnected: false
+      isSessionConnected: false,
+      session: undefined
     });
   }, [action, session]);
   var publish = react.useCallback(function (_ref4) {
@@ -475,7 +486,7 @@ var useOpenTok = function useOpenTok() {
     }
 
     return new Promise(function (resolve, reject) {
-      var newPublisher = OT.initPublisher(element, _objectSpread2({}, defaultOptions, {}, options), function (error) {
+      var newPublisher = OT.initPublisher(element, _objectSpread2(_objectSpread2({}, defaultOptions), options), function (error) {
         if (error) {
           reject(error);
         }
@@ -520,7 +531,7 @@ var useOpenTok = function useOpenTok() {
     var pickedStream = streams.find(function (s) {
       return s.streamId === streamId;
     });
-    var subscriber = session.subscribe(pickedStream, element, _objectSpread2({}, defaultOptions, {}, options));
+    var subscriber = session.subscribe(pickedStream, element, _objectSpread2(_objectSpread2({}, defaultOptions), options));
     action.addSubscriber(subscriber);
   }, [action, session, streams]);
   var unsubscribe = react.useCallback(function (_ref7) {

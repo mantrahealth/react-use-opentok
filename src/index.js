@@ -106,6 +106,7 @@ const useOpenTok = () => {
     action.update({
       connectionId: null,
       isSessionConnected: false,
+      session: undefined,
     });
   }, [action, session]);
 
